@@ -1,0 +1,9 @@
+.card{
+    input[type= text]{
+        background: transparent;
+        border-bottom: 2px solid #282828;
+        &:focus-visible{
+            outline: none;
+        }
+    }
+}
