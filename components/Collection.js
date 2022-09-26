@@ -1,5 +1,5 @@
 import { motion, LayoutGroup } from "framer-motion";
-import { collection, getFirestore, where, query, onSnapshot } from "firebase/firestore";
+import { collection, getFirestore, where, query, onSnapshot, deleteDoc, doc } from "firebase/firestore";
 import Card from "./elements/Card";
 import { useEffect, useState, useContext } from "react";
 import { auth } from "../firebase/firebase";
@@ -43,6 +43,10 @@ export default function Collection() {
     ////
 
 
+    const removeVinyl = async(id)=>{
+        await deleteDoc(doc(db, "Vinyls", id));
+        console.log("works");
+    }
 
 
     ///FETCH VINYL
@@ -83,7 +87,7 @@ export default function Collection() {
                         <LayoutGroup>
 
                             {vinyls.map(vinyl =>
-                                <motion.div layout key={vinyl.id} variants={cardItem}>
+                                <motion.div layout key={vinyl.id} variants={cardItem} onClick={()=>{removeVinyl(vinyl.id)}}>
                                     <Card album={vinyl.Album} artwork={vinyl.Artwork} year={vinyl.Year} artist={vinyl.Artist} />
                                 </motion.div>
                             )}
