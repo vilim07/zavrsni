@@ -1,13 +1,13 @@
-import { motion, LayoutGroup } from "framer-motion";
-import { collection, getFirestore, where, query, onSnapshot, deleteDoc, doc } from "firebase/firestore";
+import { motion, LayoutGroup, AnimatePresence } from "framer-motion";
+import { collection, getFirestore, where, query, onSnapshot, limit, startAfter, orderBy, getDocs } from "firebase/firestore";
 import Card from "./elements/Card";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import { auth } from "../firebase/firebase";
 import React from "react";
 import { AlbumForm } from "./elements/AlbumForm";
 import QueryContext from "../contexts/QueryContext";
-
-
+import CardMenu from "./elements/CardMenu";
+import CardShowcase from "./elements/CardShowcase";
 
 export default function Collection() {
 
@@ -16,7 +16,10 @@ export default function Collection() {
     const [vinyls, setVinyls] = useState({ vinylsMap: [], state: "waiting" })
 
     const user = auth.currentUser;
-    const [newCard, setNewCard] = useState([]);
+    const [cardMenuShown, setCardMenuShown] = useState(false);
+    const [menuOutside, setMenuOutside] = useState(false);
+    const [openCard, setOpenCard] = useState(false);
+
 
     ////ANIMATIONS
 
@@ -25,7 +28,7 @@ export default function Collection() {
         show: {
             opacity: 1,
             transition: {
-                staggerChildren: 0.25,
+                staggerChildren: 0.15,
             }
         }
     }
@@ -42,33 +45,89 @@ export default function Collection() {
 
     ////
 
+    useEffect(() => {
+        setCardMenuShown(false)
+    }, [openCard]);
 
-    const removeVinyl = async(id)=>{
-        await deleteDoc(doc(db, "Vinyls", id));
-        console.log("works");
+
+    const openCardHandler = (id, state) => {
+        const match = vinyls.filter(function (entry) { return entry.id === id; })[0]
+        setOpenCard(Object.assign(match, { state: state }))
     }
 
+    ////OUTSIDE CLICK
 
-    ///FETCH VINYL
+
+
+    useEffect(() => {
+        document.body.addEventListener("click", onClickOutside);
+        return () => document.removeEventListener("click", onClickOutside);
+    }, []);
+
+    const onClickOutside = (e) => {
+        if (!e.target.parentNode.closest(".card")) {
+            setCardMenuShown(false)
+        }
+    };
+
+    const loadMoreVinylScroll = async () => {
+
+        if ((window.innerHeight + window.pageYOffset) >= document.body.scrollHeight) {
+            const q1 = query(collection(db, "Vinyls"), where("Owner", "==", user.uid), limit(6), orderBy("Album"), startAfter(queryLast));
+            const newDocs = await getDocs(q1);
+            if (newDocs.docs.length != 0) {
+                setVinyls(prevState => [...prevState, ...newDocs.docs.map(doc => Object.assign(doc.data(), { id: doc.id }))])
+                setQueryLast(newDocs.docs[newDocs.docs.length - 1])
+            }
+            else {
+                window.removeEventListener("scroll", loadMoreVinylScroll);
+            }
+
+        }
+
+    }
+
+    ///FETCH VINYL & LISTEN SCROLL
 
     const { searchQuery, setSearchQuery } = useContext(QueryContext);
+    const [queryLast, setQueryLast] = useState([]);
+
 
 
     useEffect(() => {
         let q;
-        if (searchQuery.keywords[0].length > 0){
-            q = query(collection(db, "Vinyls"), where("Owner", "==", user.uid), where("Indices", "array-contains-any", searchQuery.keywords ));
+        if (searchQuery.keywords[0].length > 0) {
+            q = query(collection(db, "Vinyls"), where("Owner", "==", user.uid), where("Indices", "array-contains-any", searchQuery.keywords), limit(6));
         }
-        else{
-            q = query(collection(db, "Vinyls"), where("Owner", "==", user.uid));
+        else {
+            q = query(collection(db, "Vinyls"), where("Owner", "==", user.uid), orderBy("Album"), limit(26));
         }
-        onSnapshot(q, { includeMetadataChanges: true }, (snapshot) => {
+        const unsub = onSnapshot(q, { includeMetadataChanges: true }, (snapshot) => {
             setVinyls(snapshot.docs.map(doc => Object.assign(doc.data(), { id: doc.id })))
+            setQueryLast(snapshot.docs[snapshot.docs.length - 1])
         })
-        console.log(searchQuery.keywords);
+
+        window.addEventListener("scroll", loadMoreVinylScroll);
+        return () => {
+            window.removeEventListener("scroll", loadMoreVinylScroll);
+        };
 
     }, [searchQuery])
 
+
+
+    ////CARD CLICK
+    const cardClickHandler = (e, id) => {
+        const x = e.target.getBoundingClientRect().right + 240;
+        setCardMenuShown(id);
+        if (x > window.innerWidth) {
+            setMenuOutside(x - window.innerWidth)
+        }
+        else {
+            setMenuOutside(false)
+        }
+
+    }
 
     return (
         <LayoutGroup>
@@ -78,20 +137,38 @@ export default function Collection() {
 
             {vinyls.length > 0 ?
                 (
-                    <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 py-10"
+                    <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 pt-10 pb-40"
                         variants={container}
                         initial="hidden"
                         animate="show"
                     >
 
-                        <LayoutGroup>
-
+                        <AnimatePresence>
                             {vinyls.map(vinyl =>
-                                <motion.div layout key={vinyl.id} variants={cardItem} onClick={()=>{removeVinyl(vinyl.id)}}>
-                                    <Card album={vinyl.Album} artwork={vinyl.Artwork} year={vinyl.Year} artist={vinyl.Artist} />
-                                </motion.div>
+                                <>
+                                    <motion.div layoutId={vinyl.id} className={"relative "} key={vinyl.id} variants={cardItem} onClick={(e) => cardClickHandler(e, vinyl.id)}>
+                                        <Card album={vinyl.Album} artwork={vinyl.Artwork} year={vinyl.Year} artist={vinyl.Artist}
+                                            selected={cardMenuShown == vinyl.id}
+                                            open={openCard.id == vinyl.id}
+                                        />
+                                        <AnimatePresence>
+                                            <motion.div>
+                                                {cardMenuShown == vinyl.id && (
+                                                    <CardMenu id={vinyl.id} outside={menuOutside} selected={cardMenuShown == vinyl.id} openCardHandler={openCardHandler} />
+                                                )}
+                                            </motion.div>
+                                        </AnimatePresence>
+
+                                    </motion.div>
+                                    {openCard.id == vinyl.id &&
+                                            <CardShowcase id={vinyl.id} album={vinyl.Album} artist={vinyl.Artist} year={vinyl.Year} artwork={vinyl.Artwork} setOpenCard={setOpenCard}/>
+                                    }
+                                </>
                             )}
-                        </LayoutGroup>
+
+
+                        </AnimatePresence>
+
 
                     </motion.div>
                 )

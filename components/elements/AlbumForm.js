@@ -60,7 +60,7 @@ export const AlbumForm = () => {
                         initial="hidden"
                         animate="show"
                     >
-                        <form className="flex" onSubmit={handleSubmit}>
+                        <form className="flex" onSubmit={handleSubmit} autoComplete="off">
                             <ImageInput setArt={setArt}/>
 
                             <div className="ml-5 grid grid-rows-3 gap-4 items-end grid-flow-col">
@@ -91,6 +91,7 @@ export const AlbumForm = () => {
                                         onChange={e=>setYear(e.target.value)}
                                     />
                                 </label>
+                                
                             </div>
                             <input className="btn btn-primary mt-auto ml-4 px-6" type="submit" value="Submit" />
 

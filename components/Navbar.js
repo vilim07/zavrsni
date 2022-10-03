@@ -14,6 +14,8 @@ export default function Navbar({ user }) {
       keywords: (e.target.value).toLowerCase().split(" ")
     }))
   }
+  const debounceSetQuery = debounce(setQueryKeywords, 500);
+
   return (
     <div className="sticky z-10 w-full top-0">
       <div className="navbar p-4 justify-between">
@@ -22,9 +24,16 @@ export default function Navbar({ user }) {
 
 
           {user && (
-            <div className="form-control rounded-box overflow-hidden">
-              <input type="text" placeholder="Search" className="input bg-transparent" onChange={setQueryKeywords} />
-            </div>
+            <>
+            <span className="border-l-2 h-6 mx-2" />
+            
+            <label className="form-control overflow-hidden rounded-xl flex-row items-center focus-within:bg-base-100 pl-2">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+              </svg>
+              <input type="text" placeholder="Search" className="input bg-transparent pl-2 focus:outline-transparent" onChange={debounceSetQuery} />
+            </label>
+            </>
           )}
         </div>
         <div className="flex-none gap-2 bg-black rounded-box">

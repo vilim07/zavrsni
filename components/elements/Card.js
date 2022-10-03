@@ -1,40 +1,55 @@
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, } from "framer-motion"
 import Image from "next/image"
 import CardStyle from '../../styles/Card.module.scss'
 
-export default function Card({album, artist, year, artwork}) {
+export default function Card({ album, artist, year, artwork, selected, open }) {
+    
+
     const item = {
-        hover:{
+        hover: {
             backgroundColor: "#282828",
             transition: { duration: 0.1 },
         },
-        exit:{
+        exit: {
             opacity: 0,
             scale: 0.5,
-            transition: {type: "spring"},
+            transition: {
+                type: "spring",
+                stiffness: 100,
+                damping: 10
+            }
         },
-        whileTap:{
+        selected: {
+            scale: 1.1,
+            backgroundColor: "#002B3D",
+            transition: { type: "spring" },
+        },
+        whileTap: {
             scale: 0.98,
-            transition: {type: "spring"},
-        } 
-    }
-    return (
-        <AnimatePresence>
-            <motion.div className={"card w-full bg-base-100 shadow-xl p-5 pb-5 rounded cursor-pointer h-full " + CardStyle.card}
-                variants={item}
-                whileHover="hover"
-                whileTap="whileTap"
-                exis="exit"
-            >
-                <figure className="">
-                    <Image src={artwork} width={420} height={420} className="aspect-square shadow-xl w-full object-cover rounded-sm" />
-                </figure>
-                <div className="card-body pt-5 pb-0 px-0 prose">
-                    <h2 className="mb-0">{album}</h2>
-                    <h4>{year && year + " •"} {artist}</h4>
+            transition: { type: "spring" },
+        },
 
-                </div>
-            </motion.div>
-        </AnimatePresence>
+    }
+
+
+
+
+
+    return (
+        <motion.div layout="position" className={"card w-full bg-base-100 shadow-xl p-5 pb-5 rounded cursor-pointer h-full " + CardStyle.card + " " + (selected == true && " bg-base-200")}
+            variants={item}
+            whileHover={selected ? "selected" : "hover"}
+            whileTap="whileTap"
+            animate={selected ? "selected" : ""}
+            exit="exit"
+        >
+            <figure className=" mr-auto aspect-square shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6)]">
+                <Image src={artwork} width={196} height={196} className=" object-cover w-full rounded-sm" />
+            </figure>
+            <div className="card-body pt-5 pb-0 px-0 prose">
+                <h3 className="font-bold leading-7 line-clamp-2">{album}</h3>
+                <h4 className="line-clamp-2 min-h-[48px] mt-auto">{year && year + " •"} {artist}</h4>
+            </div>
+        </motion.div>
     )
 }
