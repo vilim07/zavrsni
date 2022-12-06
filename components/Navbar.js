@@ -15,7 +15,6 @@ export default function Navbar({ user }) {
     }))
   }
   const debounceSetQuery = debounce(setQueryKeywords, 500);
-
   return (
     <div className="sticky z-10 w-full top-0">
       <div className="navbar p-4 justify-between">
@@ -41,8 +40,8 @@ export default function Navbar({ user }) {
             ? (
               <div className="dropdown dropdown-end px-2 py-2">
                 <label tabIndex="0" className="btn btn-ghost h-fit px-2">
-                  <a className="text-xl normal-case mr-2"><UserName /></a>
-                  <div className="btn-circle avatar overflow-hidden place-content-center">
+                  <a className="text-xl normal-case mr-3"><UserName /></a>
+                  <div className="btn-circle avatar overflow-hidden place-content-center my-1">
                     <UserImage />
                   </div>
                 </label>

@@ -18,11 +18,11 @@ const cardForm = {
 
 export const AlbumForm = () => {
 
-    const [art, setArt] = useState({});
-    const [title, setTitle] = useState({});
-    const [artist, setArtist] = useState({});
-    const [year, setYear] = useState({});
-
+    const [art, setArt] = useState("");
+    const [title, setTitle] = useState("");
+    const [artist, setArtist] = useState("");
+    const [year, setYear] = useState("");
+    const [forTrade, setForTrade] = useState(false)
 
 
     const [showCardForm, setShowCardForm] = useState(false);
@@ -33,7 +33,7 @@ export const AlbumForm = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        uploadNewAlbum(title,artist,year,art);
+        uploadNewAlbum(title,artist,year,art,forTrade);
         setShowCardForm(false)
     }
 

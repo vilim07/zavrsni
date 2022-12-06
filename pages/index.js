@@ -10,8 +10,6 @@ export default function Home() {
     return <div> Loading... </div>;
   }
   else if (user) {
-
-
     return (
       <>
         <div className="container mt-10">

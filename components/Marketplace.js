@@ -9,7 +9,7 @@ import QueryContext from "../contexts/QueryContext";
 import CardMenu from "./elements/CardMenu";
 import CardShowcase from "./elements/CardShowcase";
 
-export default function Collection({marketPage=false}) {
+export default function Collection() {
 
     const db = getFirestore();
 
@@ -71,30 +71,13 @@ export default function Collection({marketPage=false}) {
     };
 
     const loadMoreVinylScroll = async () => {
-         if ((window.innerHeight + window.pageYOffset) >= document.body.scrollHeight) {
-            let q1;
 
-            if (searchQuery.keywords[0].length > 0) {
-                if (!marketPage){
-                    q1 = query(collection(db, "Vinyls"), where("Owner", "==", user.uid), where("Indices", "array-contains-any", searchQuery.keywords), limit(6), orderBy("Album"), startAfter(queryLast));
-                }
-                else{
-                    q1 = query(collection(db, "Vinyls"), where("Owner", "!=", user.uid), where("Trade", "==", true), where("Indices", "array-contains-any", searchQuery.keywords) , limit(6), orderBy("Owner"), orderBy("Album"), startAfter(queryLast));
-                }
-            }
-            else {
-                if (!marketPage){
-                    q1 = query(collection(db, "Vinyls"), where("Owner", "==", user.uid), limit(6), orderBy("Album"), startAfter(queryLast));
-                }
-                else{
-                    q1 = query(collection(db, "Vinyls"), where("Owner", "!=", user.uid), where("Trade", "==", true), limit(6), orderBy("Owner"), orderBy("Album"), startAfter(queryLast));
-                }
-            }
-            
+        if ((window.innerHeight + window.pageYOffset) >= document.body.scrollHeight) {
+            const q1 = query(collection(db, "Vinyls"), where("Owner", "==", user.uid), limit(6), orderBy("Album"), startAfter(queryLast));
             const newDocs = await getDocs(q1);
             if (newDocs.docs.length != 0) {
                 setVinyls(prevState => [...prevState, ...newDocs.docs.map(doc => Object.assign(doc.data(), { id: doc.id }))])
-                queryLast = (newDocs.docs[newDocs.docs.length - 1]);
+                setQueryLast(newDocs.docs[newDocs.docs.length - 1])
             }
             else {
                 window.removeEventListener("scroll", loadMoreVinylScroll);
@@ -105,32 +88,22 @@ export default function Collection({marketPage=false}) {
     ///FETCH VINYL & LISTEN SCROLL
 
     const { searchQuery, setSearchQuery } = useContext(QueryContext);
-    let queryLast;
+    const [queryLast, setQueryLast] = useState([]);
 
 
 
     useEffect(() => {
         let q;
         if (searchQuery.keywords[0].length > 0) {
-            if (!marketPage){
-                q = query(collection(db, "Vinyls"), where("Owner", "==", user.uid), where("Indices", "array-contains-any", searchQuery.keywords), limit(6));
-            }
-            else{
-                q = query(collection(db, "Vinyls"), where("Owner", "!=", user.uid), where("Trade", "==", true), where("Indices", "array-contains-any", searchQuery.keywords), limit(6));
-            }
+            q = query(collection(db, "Vinyls"), where("Owner", "==", user.uid), where("Indices", "array-contains-any", searchQuery.keywords), limit(6));
         }
         else {
-            if (!marketPage){
-                q = query(collection(db, "Vinyls"), where("Owner", "==", user.uid), orderBy("Album"), limit(26));
-            } 
-            else{
-                q = query(collection(db, "Vinyls"), where("Owner", "!=", user.uid), where("Trade", "==", true), orderBy("Owner"), orderBy("Album"), limit(26));
-            }
+            q = query(collection(db, "Vinyls"), where("Owner", "==", user.uid), orderBy("Album"), limit(26));
         }
 
         const unsub = onSnapshot(q, { includeMetadataChanges: true }, (snapshot) => {
             setVinyls(snapshot.docs.map(doc => Object.assign(doc.data(), { id: doc.id })))
-            queryLast= (snapshot.docs[snapshot.docs.length - 1]);
+            setQueryLast(snapshot.docs[snapshot.docs.length - 1])
         })
 
         window.addEventListener("scroll", loadMoreVinylScroll);
@@ -177,20 +150,15 @@ export default function Collection({marketPage=false}) {
                                             selected={cardMenuShown == vinyl.id}
                                             open={openCard.id == vinyl.id}
                                             forTrade={vinyl.Trade}
-                                            marketPage={marketPage}
                                         />
                                         <AnimatePresence>
                                             <motion.div>
                                                 {cardMenuShown == vinyl.id && (
-                                                    <CardMenu id={vinyl.id} outside={menuOutside} selected={cardMenuShown == vinyl.id} openCardHandler={openCardHandler} forTrade={vinyl.Trade} marketPage={marketPage} owner={vinyl.Owner}/>
+                                                    <CardMenu id={vinyl.id} outside={menuOutside} selected={cardMenuShown == vinyl.id} openCardHandler={openCardHandler} forTrade={vinyl.Trade} />
                                                 )}
                                             </motion.div>
                                         </AnimatePresence>
                                     </motion.div>
-{/* 
-                                    {openCard.id == vinyl.id &&
-                                        <CardShowcase id={vinyl.id} album={vinyl.Album} artist={vinyl.Artist} year={vinyl.Year} artwork={vinyl.Artwork} setOpenCard={setOpenCard} />
-                                    } */}
                                 </div>
                             )}
 
@@ -204,9 +172,9 @@ export default function Collection({marketPage=false}) {
                 <>
                     {vinyls.length == 0 && vinyls.state != "waiting" &&
                         (
-                            <div className="prose mx-auto mt-16 text-center">
+                            <>
                                 <h2>Nobody here but us chickens 🐤</h2>
-                            </div>
+                            </>
                         )}
                 </>
 

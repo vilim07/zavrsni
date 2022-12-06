@@ -7,7 +7,7 @@ import { v4 } from "uuid";
 
 
 
-export const uploadNewAlbum = async (album, artist, year, art) => {
+export const uploadNewAlbum = async (album, artist, year, art, forTrade) => {
 
     const user = auth.currentUser;
     const imageRef = ref(storage, `Art/${art.name + v4()}`);
@@ -15,10 +15,9 @@ export const uploadNewAlbum = async (album, artist, year, art) => {
     const explodedIndices = [];
 
     [album, artist, year].forEach(attr => {
-        (attr.split(" ")).forEach(word => {
-            [...word].forEach((letter, i) => explodedIndices.push(word.substr(letter, i + 1).toLowerCase()))
-        });
-
+            (attr.split(" ")).forEach(word => {
+                [...word].forEach((letter, i) => explodedIndices.push(word.substr(letter, i + 1).toLowerCase()))
+            });
     })
     let indices = explodedIndices.filter((element, index) => {
         return explodedIndices.indexOf(element) === index;
@@ -34,6 +33,7 @@ export const uploadNewAlbum = async (album, artist, year, art) => {
             Year: year,
             Owner: user.uid,
             Indices: indices,
+            Trade: forTrade,
             Registered: serverTimestamp()
         });
     })
