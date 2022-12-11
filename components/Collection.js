@@ -131,9 +131,11 @@ export default function Collection({marketPage=false}) {
         const unsub = onSnapshot(q, { includeMetadataChanges: true }, (snapshot) => {
             setVinyls(snapshot.docs.map(doc => Object.assign(doc.data(), { id: doc.id })))
             queryLast= (snapshot.docs[snapshot.docs.length - 1]);
+            if( snapshot.docs.length > 0){
+                window.addEventListener("scroll", loadMoreVinylScroll);
+            }
         })
 
-        window.addEventListener("scroll", loadMoreVinylScroll);
         return () => {
             window.removeEventListener("scroll", loadMoreVinylScroll);
         };
