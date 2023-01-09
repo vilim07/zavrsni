@@ -25,7 +25,7 @@ export default function Messanger() {
   return (
     <>
       {user ? (
-        <div className="container lg:mt-10 pb-16">
+        <div className="container lg:mt-10 pb-20">
           <div className="prose-xl text-center font-bold mb-10 hidden lg:block"><h1>Chat</h1></div>
           <motion.div className="flex flex-col lg:flex-row rounded-xl overflow-hidden"
             variants={opacity}
