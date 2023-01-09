@@ -37,7 +37,7 @@ export const ChatElement = ({ chat, activeChat, setActiveChat }) => {
                     layout='fill'
                 />
             </div>
-            <div className="items-center prose hidden md-flex">   
+            <div className="items-center prose hidden md:flex">   
                 <h3>{oUser.name}</h3>
             </div>
         </li>
