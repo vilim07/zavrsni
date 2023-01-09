@@ -50,7 +50,7 @@ export const Chat = ({ chat }) => {
                         <div className="lg:px-10 pt-3 pb-4 mt-auto flex flex-col-reverse h-full overflow-y-auto">
                             {messages.length == 0 ?
                                 (
-                                    <h3 className=" py-2 px-4 w-fit rounded-xl bg-base-300">Currently there are no messages! <br /> Write something ;)</h3>
+                                    <h3 className="mx-4 py-2 px-4 w-fit rounded-xl bg-base-300">Currently there are no messages! <br /> Write something ;)</h3>
                                 ) :
                                 (
                                     <ul className="mt-auto w-full pl-0">

@@ -26,7 +26,7 @@ function ChatList({ activeChat, setActiveChat }) {
         <>
 
             {(chats.length > 0 && chats.state != "waiting") ? (
-                <motion.ul className="w-fit max-w-full flex flex-row lg:flex-col lg:w-1/4 rounded-tr-xl lg:rounded-bl-xl lg:overflow-hidden overflow-x-auto h-fit">
+                <motion.ul className="w-fit max-w-full flex flex-row lg:flex-col lg:w-1/4 rounded-tr-xl lg:rounded-tr-none lg:rounded-bl-xl lg:overflow-hidden lg:overflow-y-auto overflow-x-auto h-fit max-h-[70vh]">
                     {chats.map((chat, i) =>
                         <ChatElement key={chat.id} chat={chat} activeChat={activeChat} setActiveChat={setActiveChat} />
                     )}
