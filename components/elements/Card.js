@@ -2,7 +2,7 @@ import { motion, } from "framer-motion"
 import Image from "next/image"
 import CardStyle from '../../styles/Card.module.scss'
 
-export default function Card({ album, artist, year, artwork, selected, open, forTrade, marketPage }) {
+export default function Card({ album, artist, year, artwork, selected, forTrade, marketPage }) {
 
 
     const item = {
@@ -22,6 +22,7 @@ export default function Card({ album, artist, year, artwork, selected, open, for
         selected: {
             scale: 1.1,
             backgroundColor: "#002B3D",
+            zIndex: "2",
             transition: { type: "spring" },
         },
         whileTap: {
@@ -31,20 +32,17 @@ export default function Card({ album, artist, year, artwork, selected, open, for
 
     }
 
-
-
-
-
     return (
-        <motion.div layout="position" className={"card w-full bg-base-100 shadow-xl p-5 pb-5 rounded cursor-pointer h-full " + CardStyle.card + " " + (selected == true && " bg-base-200")}
+        <motion.div layout="position" 
+        className={"card w-full bg-base-100 shadow-xl p-5 pb-5 rounded cursor-pointer h-full " + CardStyle.card + " " + (selected == true && " bg-base-200")}
             variants={item}
             whileHover={selected ? "selected" : "hover"}
             whileTap="whileTap"
             animate={selected ? "selected" : ""}
             exit="exit"
         >
-            <figure className=" mr-auto aspect-square shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6)]">
-                <Image src={artwork} width={196} height={196} className=" object-cover w-full rounded-sm" />
+            <figure className=" mr-auto aspect-square w-full shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6)]">
+                <Image src={artwork} width={300} height={300} className=" object-cover w-full h-auto rounded-sm" />
             </figure>
             <div className="card-body pt-5 pb-0 px-0 prose">
                 <h3 className="font-bold leading-7 line-clamp-2">{album}</h3>

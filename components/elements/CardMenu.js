@@ -3,7 +3,7 @@ import { removeAlbum, toggleTrade } from "../../firebase/firebaseFunctions";
 import { contactOwner } from "../../firebase/chatFunctions";
 import { useRouter } from "next/router";
 
-export default function CardMenu({ id, selected, outside, openCardHandler, forTrade, marketPage, owner }) {
+export default function CardMenu({ id, outside, forTrade, marketPage, owner }) {
     const cardMenu = {
         open: {
             clipPath: `circle(100% at 50% 50%)`,
@@ -35,16 +35,10 @@ export default function CardMenu({ id, selected, outside, openCardHandler, forTr
     const router = useRouter();
 
     return (
-        <motion.ul layout className={"menu bg-base-200 drop-shadow-2xl w-60 p-2 absolute top-[90%] z-10 rounded-box " + (!outside && "right-0 translate-x-3/4")} variants={cardMenu}
-            animate={selected ? "open" : "closed"}
+        <motion.ul layout className={"menu bg-base-200 drop-shadow-2xl w-full sm:w-60 p-2 absolute top-[90%] z-10 rounded-box " + (!outside && "right-0 translate-x-3/4")} variants={cardMenu}
+            animate={"open"}
             exit="exit"
         >
-            <li>
-                <a onClick={() => { openCardHandler(id, "info") }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    Info
-                </a>
-            </li>
             {!marketPage ? (
                 <>
                     <li>

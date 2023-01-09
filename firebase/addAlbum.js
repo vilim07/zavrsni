@@ -11,18 +11,17 @@ export const uploadNewAlbum = async (album, artist, year, art, forTrade) => {
 
     const user = auth.currentUser;
     const imageRef = ref(storage, `Art/${art.name + v4()}`);
-    const rawIndices = ([album, artist, year].join(" ").toLowerCase()).split(" ");
-    const explodedIndices = [];
+    //const rawIndices = ([album, artist, year].join(" ").toLowerCase()).split(" ");
+    let explodedIndices = [];
 
     [album, artist, year].forEach(attr => {
-            (attr.split(" ")).forEach(word => {
-                [...word].forEach((letter, i) => explodedIndices.push(word.substr(letter, i + 1).toLowerCase()))
-            });
+        (attr.split(" ")).forEach(word => {
+            [...word].forEach((letter, i) => explodedIndices.push(word.substr(letter, i + 1).toLowerCase()))
+        });
     })
     let indices = explodedIndices.filter((element, index) => {
         return explodedIndices.indexOf(element) === index;
     });
-
 
     uploadBytes(imageRef, art).then(async () => {
         const downloadURL = await getDownloadURL(imageRef);
@@ -37,10 +36,6 @@ export const uploadNewAlbum = async (album, artist, year, art, forTrade) => {
             Registered: serverTimestamp()
         });
     })
-
-
-
-
 }
 
 

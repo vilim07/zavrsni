@@ -5,11 +5,6 @@ import CardStyle from '../../styles/Card.module.scss'
 export default function CardShowcase({ id, album, artist, year, artwork, setOpenCard}) {
 
 
-
-
-
-
-
     return (
         <>
             <div className="w-full h-full fixed  opacity-70 bg-base-200 left-0 top-0 z-10"></div>

@@ -5,7 +5,6 @@ const QueryContext = createContext();
 export const QueryProvider = ({ children }) => {
     const [searchQuery, setSearchQuery] = useState({
         keywords: [""],
-        sortBy: "",
       });
     return (
         <QueryContext.Provider value={{searchQuery, setSearchQuery}}>

@@ -5,12 +5,9 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import {useState} from "react"
 
 export default function Layout({ children }) {
-const [user, loading, error] = useAuthState(auth);
+const [user, loading] = useAuthState(auth);
 
-  if (loading) {
-    return <div> Loading... </div>;
-  }
-  else if (user) {
+  if (user) {
     return (
       <>
         <Navbar user="true"/>

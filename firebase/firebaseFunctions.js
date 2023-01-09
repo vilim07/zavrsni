@@ -3,10 +3,7 @@ import { db } from "./firebase";
 
 
 export const removeAlbum = async (id) => {
-
     await deleteDoc(doc(db, "Vinyls", id));
-    console.log("works");
-
 }
 
 export const toggleTrade = async (id, state) => {
@@ -14,6 +11,4 @@ export const toggleTrade = async (id, state) => {
     await updateDoc(docRef, {
         Trade: state
     });
-    console.log(state);
-
 }

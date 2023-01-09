@@ -2,8 +2,7 @@ import { initializeApp, getApps } from "firebase/app"
 import 'firebase/auth';
 import { getAuth } from "firebase/auth";
 import {getStorage} from "firebase/storage"
-import {getFirestore, initializeFirestore, CACHE_SIZE_UNLIMITED, enableIndexedDbPersistence} from 'firebase/firestore';
-import { getDatabase } from "firebase/database";
+import {getFirestore} from 'firebase/firestore';
 
 
 
@@ -20,9 +19,6 @@ const clientCredentials = {
 if (!getApps().length) {
     const app = initializeApp(clientCredentials)
 }
-
-
-
 
 const auth = getAuth();
 const db = getFirestore();

@@ -16,19 +16,22 @@ const cardForm = {
 }
 
 
-export const AlbumForm = () => {
+export const AlbumForm = ({market}) => {
 
     const [art, setArt] = useState("");
     const [title, setTitle] = useState("");
     const [artist, setArtist] = useState("");
     const [year, setYear] = useState("");
-    const [forTrade, setForTrade] = useState(false)
+
 
 
     const [showCardForm, setShowCardForm] = useState(false);
 
-    const handleChange = (event) => {
 
+
+    let forTrade = false;
+    if (market == true){
+        forTrade = true;
     }
 
     const handleSubmit = (event) => {
@@ -36,6 +39,8 @@ export const AlbumForm = () => {
         uploadNewAlbum(title,artist,year,art,forTrade);
         setShowCardForm(false)
     }
+
+
 
     return (
         <>
@@ -56,16 +61,16 @@ export const AlbumForm = () => {
             </motion.button>
             {showCardForm == true &&
                 (
-                    <motion.div layout className="bg-base-100 p-8 w-fit mt-5 rounded-md" variants={cardForm}
+                    <motion.div layout className="bg-base-100 p-8 sm:w-fit mt-5 rounded-md max-w-full" variants={cardForm}
                         initial="hidden"
                         animate="show"
                     >
-                        <form className="flex" onSubmit={handleSubmit} autoComplete="off">
+                        <form className="flex flex-col md:flex-row " onSubmit={handleSubmit} autoComplete="off">
                             <ImageInput setArt={setArt}/>
 
-                            <div className="ml-5 grid grid-rows-3 gap-4 items-end grid-flow-col">
+                            <div className="md:ml-5 mt-4 md:mt-0 grid grid-rows-3 gap-4 items-end grid-flow-col">
                                 <label className="flex flex-col">
-                                    <input type="text" placeholder="Album" className="input input-bordered pl-1 w-[300px] rounded-none border-0 border-b focus:outline-transparent"
+                                    <input type="text" placeholder="Album" className="input input-bordered pl-1 w-full lg:w-[300px] rounded-none border-0 border-b focus:outline-transparent"
                                         required
                                         minLength="1"
                                         maxLength="50"
@@ -74,7 +79,7 @@ export const AlbumForm = () => {
                                     />
                                 </label>
                                 <label className="flex flex-col">
-                                    <input type="text" placeholder="Artist" className="input input-bordered pl-1 w-[300px] rounded-none border-0 border-b focus:outline-transparent"
+                                    <input type="text" placeholder="Artist" className="input input-bordered pl-1 w-full lg:w-[300px] rounded-none border-0 border-b focus:outline-transparent"
                                         required
                                         minLength="1"
                                         maxLength="50"
@@ -93,7 +98,7 @@ export const AlbumForm = () => {
                                 </label>
                                 
                             </div>
-                            <input className="btn btn-primary mt-auto ml-4 px-6" type="submit" value="Submit" />
+                            <input className="btn btn-primary mt-4 md:mt-auto md:ml-4 px-6" type="submit" value="Submit" />
 
                         </form>
                     </motion.div>

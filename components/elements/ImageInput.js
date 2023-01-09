@@ -27,7 +27,7 @@ export const ImageInput = (props) => {
 
     
       return (
-          <div {...getRootProps({ className: 'dropzone border-2 rounded-md border-dashed w-[196px] h-[196px] flex items-center justify-center cursor-pointer' })}>
+          <div {...getRootProps({ className: 'dropzone border-2 rounded-md border-dashed w-[124px] h-[124px] lg:w-[196px] lg:h-[196px] flex items-center justify-center cursor-pointer' })}>
             <input {...getInputProps()} name="art" />
             {acceptedFiles.length > 0 ? 
             (

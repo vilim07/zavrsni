@@ -1,41 +1,48 @@
 import Image from "next/image";
+import { useState, useEffect } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db, auth } from "../../firebase/firebase";
 
-export const ChatElement = ({ oUser, chat, user }) => {
+export const ChatElement = ({ chat, activeChat, setActiveChat }) => {
 
-    const date = Math.abs(chat.lastActivity.toDate() - Date.now());
-    let diff;
+    const [oUser, setOUser] = useState(null);
 
-    if (date > 8.64e+7) {
-        diff = ~~(date / 8.64e+7) + "days";
-    }
-    else if (date > 3.6e+6) {
-        diff = ~~(date / 3.6e+6) + "hours";
-    }
-    else if (date > 60000) {
-        diff = ~~(date / 60000) + "minutes";
-    }
-    else {
-        diff = ~~(date / 1000) + "seconds";
+    useEffect(() => {
+        const fetchUser = async (snap) => {
+            const other = doc(db, "Users", snap.users.find(element => element != auth.currentUser.uid));
+            const otherData = await getDoc(other);
+            setOUser(otherData.data())
+        }
+
+       fetchUser(chat);
+
+    }, []);
+
+
+    const clickHanlder = () =>{
+        setActiveChat({
+            id: chat.id,
+            user: oUser
+        })
     }
 
     return (
-        <li className="flex bg-base-100 px-8">
-            <div className="w-14 h-14 relative overflow-hidden rounded-full mr-8 ">
+        <>
+        {oUser ? (
+            <li className={"flex px-4 py-2 xl:px-8 xl:py-4 border-r border-r-base-300 cursor-pointer transition " + (chat.id == activeChat.id ? "bg-primary" : "bg-base-100 hover:bg-base-200")} onClick={()=>{clickHanlder()}}>
+            <div className="w-14 h-14 relative overflow-hidden rounded-full lg:mr-8">
                 <Image
                     src={oUser.picture}
                     alt="User Image"
                     layout='fill'
                 />
             </div>
-            <div>   
-                {oUser.name}
-                {chat.lastContent.message && (
-                    <>
-                        {user == chat.lastContent.sender && "You: "}{chat.lastContent.message}
-                        {diff} ago
-                    </>
-                )}
+            <div className="items-center prose hidden md-flex">   
+                <h3>{oUser.name}</h3>
             </div>
         </li>
+        ):
+        null}
+        </>
     )
 }

@@ -9,7 +9,7 @@ function ActiveLink({ children, href }) {
   }
 
   return (
-    <a href={href} onClick={handleClick} className={(router.pathname === {href} ? 'active' : '' + "rounded-lg	px-4 py-3")}>
+    <a href={href} onClick={handleClick} className="rounded-lg px-4 py-3">
       {children}
     </a>
   )

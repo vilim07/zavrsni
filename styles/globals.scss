@@ -37,15 +37,16 @@ html {
   }
 }
 
-body::-webkit-scrollbar {
+*::-webkit-scrollbar {
   width: 8px;               /* width of the entire scrollbar */
+  height: 8px;
 }
 
-body::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
   background: #181818;        /* color of the tracking area */
 }
 
-body::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
   background-color: #282828;
   border-radius: 6px;
 }

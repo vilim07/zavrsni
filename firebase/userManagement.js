@@ -1,4 +1,4 @@
-import firebase, { auth } from './firebase';
+import { auth, db } from './firebase';
 import { GoogleAuthProvider, getAuth, signOut, signInWithPopup } from 'firebase/auth';
 import { doc, setDoc, getDoc, getFirestore, serverTimestamp } from "firebase/firestore";
 import Image from 'next/image'
@@ -9,11 +9,10 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 
 
 const provider = new GoogleAuthProvider();
-const db = getFirestore();
+
 
 export const signInUser = async () => {
     await signInWithPopup(auth, provider);
-    console.log("loged in")
     const user = auth.currentUser;
 
     const docRef = doc(db, "Users", user.uid);
@@ -27,16 +26,10 @@ export const signInUser = async () => {
             registered: serverTimestamp()
         });
     }
-    else {
-        console.log('EXISTS!!!')
-    }
-
-
 }
 
 export const signOutUser = async () => {
     await signOut(auth);
-    console.log("loged out")
 }
 
 export const ShowUser = () => {
@@ -117,15 +110,6 @@ const dragNDrop = () => {
         });
 }
 
-export const AddAlbumButton = () => {
-    const user = auth.currentUser;
-
-
-}
-
-export const addUser = async () => {
-
-}
 
 
 //console.log(useAuthState)
